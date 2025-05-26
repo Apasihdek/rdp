@@ -1,4 +1,4 @@
-name: RDP via Serveo (No Ngrok, No Kartu)
+name: RDP via localhost.run (Gratis, Tanpa Kartu)
 
 on: workflow_dispatch
 
@@ -6,19 +6,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Install desktop & xrdp
+    - name: Install Desktop & xrdp
       run: |
         sudo apt update
-        sudo apt install xfce4 xfce4-goodies xrdp openssh-client -y
+        sudo apt install -y xfce4 xfce4-goodies xrdp openssh-client
         sudo useradd -m rdpuser || true
         echo "rdpuser:rdppass" | sudo chpasswd
         sudo usermod -aG sudo rdpuser
         sudo systemctl enable xrdp
         sudo systemctl start xrdp
 
-    - name: Setup tunnel with Serveo
+    - name: Start TCP Tunnel with localhost.run
       run: |
-        ssh -o StrictHostKeyChecking=no -R 3389:localhost:3389 serveo.net &
-        sleep 10
-        echo "Tunggu sebentar, lalu buka bagian log ini untuk melihat alamat RDP-nya (serveo.net:PORT)"
-        curl https://serveo.net
+        echo "TUNNEL URL AKAN MUNCUL DI BAWAH INI:"
+        ssh -o StrictHostKeyChecking=no -R 2222:localhost:3389 ssh.localhost.run
