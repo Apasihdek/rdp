@@ -1,4 +1,4 @@
-name: RDP via Serveo (No Ngrok)
+name: RDP via Serveo (No Ngrok, No Kartu)
 
 on: workflow_dispatch
 
@@ -10,14 +10,15 @@ jobs:
       run: |
         sudo apt update
         sudo apt install xfce4 xfce4-goodies xrdp openssh-client -y
+        sudo useradd -m rdpuser || true
+        echo "rdpuser:rdppass" | sudo chpasswd
+        sudo usermod -aG sudo rdpuser
         sudo systemctl enable xrdp
         sudo systemctl start xrdp
-        echo "rdpuser:rdppass" | sudo chpasswd
-        sudo useradd -m rdpuser || true
-        sudo usermod -aG sudo rdpuser
 
-    - name: Tunnel via Serveo (port forwarding)
+    - name: Setup tunnel with Serveo
       run: |
         ssh -o StrictHostKeyChecking=no -R 3389:localhost:3389 serveo.net &
         sleep 10
-        curl https://serveo.net  # ini akan menampilkan subdomain acak yang aktif
+        echo "Tunggu sebentar, lalu buka bagian log ini untuk melihat alamat RDP-nya (serveo.net:PORT)"
+        curl https://serveo.net
